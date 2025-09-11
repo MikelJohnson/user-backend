@@ -24,6 +24,21 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+// Create user
+app.post("/user", async (req, res) => {
+  try {
+    const user = new User(req.body);
+    await user.save();
+    res.status(201).send(user);
+  } catch (err) {
+    if (err?.errorResponse?.code == 11000) {
+      res.status(409).send({"error":"Login already exists"})
+    } else {
+      res.status(500).send({error:err.message});
+    }
+  }
+});
+
 // Delete user
 app.delete("/user/:id", async (req, res) => {
   try {
