@@ -39,6 +39,32 @@ app.post("/user", async (req, res) => {
   }
 });
 
+// Edit user
+app.put("/user/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (req.body.login == undefined && req.body.passHash == undefined){
+      res.status(400).send({"error":"Nothing to update"})
+      return
+    }
+    if (req.body.login){
+      if (await User.exists({login: req.body.login})){
+        res.status(409).send({"error":"Login already exists"})
+        return
+      } else {
+        user.login = req.body.login
+      }
+    }
+    if (req.body.passHash){
+      user.passHash = req.body.passHash
+    }
+    await user.save();
+    res.status(201).send(user);
+  } catch (err) {
+    res.status(500).send({error:err.message});
+  }
+});
+
 // Delete user
 app.delete("/user/:id", async (req, res) => {
   try {
