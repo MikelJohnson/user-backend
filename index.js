@@ -24,6 +24,17 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+// Delete user
+app.delete("/user/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    await user.deleteOne();
+    res.status(204).send();
+  } catch (err) {
+    res.status(404).send({"error":"User not found"});
+  }
+});
+
 app.all('/{*any}', async (req, res) => {
     res.status(400).send({"error": `Cannot ${req.method} /${req.params.any??''}`})
 })
