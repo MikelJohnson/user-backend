@@ -27,7 +27,10 @@ app.get("/user/:id", async (req, res) => {
 // Create user
 app.post("/user", async (req, res) => {
   try {
-    const user = new User(req.body);
+    const user = new User({
+      login: req.body.login,
+      passHash: req.body.passHash,
+    });
     await user.save();
     res.status(201).send(user);
   } catch (err) {
