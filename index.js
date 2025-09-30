@@ -14,6 +14,15 @@ await mongoose
 
 app.use(express.json());
 
+app.get("/id/:login", async (req, res) => {
+  const users = await User.findOne({ login: req.params.login });
+  if (users == null) {
+    res.status(404).send({ error: "User not found" });
+  } else {
+    res.send(users);
+  }
+});
+
 // Get user
 app.get("/user/:id", async (req, res) => {
   try {
